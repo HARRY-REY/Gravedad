@@ -12,7 +12,7 @@ azul     = ( 0   , 0   , 200 )
 amarillo = ( 255 , 255 , 0   )
 
 # -VENTANA
-tamaño    = ancho,alto = 300,300            # Tamaño de la pantalla
+tamaño    = ancho,alto = 300,500            # Tamaño de la pantalla
 pantalla  = pygame.display.set_mode(tamaño) # Se cre una pantall con pygame con el tamaño prediseñado
 pygame.display.set_caption("Gravedad")      # Se le pone un nombre al borde de la pantalla
 
@@ -31,6 +31,8 @@ class Pelota:
 
 # -DATOS
 velocidad = 0
+altura    = 150 
+toco_piso = False
 
 balon = Pelota ( 150 , 20 , 20 , rojo)
 # -BUCLÉ 
@@ -42,7 +44,7 @@ while True:
         if accion.type    == pygame.KEYDOWN:
             # Si presionamos la tecla 'c'
             if accion.key == pygame.K_c:
-               velocidad = 10 
+               velocidad = 20 
 
     # Muestra la pantalla con fondo de color
     pantalla.fill(blanco)
@@ -52,15 +54,30 @@ while True:
 
     # Muestra la pelota
     balon.mostrar()
+    # Lineas de medición BORRAR DESPUÉS XXXXXXXXXXXXXXXXXXX
+    #L1 = pygame.draw.line(pantalla, negro, (0,150), (300,150))
+    #L2 = pygame.draw.line(pantalla, negro, (0,225), (300,225))
 
     # Condición para no rebasar el suelo
-    if balon.y >= 300:
+    if balon.y >= alto:
         velocidad *= -1
+        toco_piso = True
 
-    # Condición para no rebadar el techo
-    if balon.y < 0: 
+    # Si la pelota llego al piso rebotara y cada vez perdera altura hasta quedar quieta
+    elif toco_piso == True and balon.y <= altura:
         velocidad *= -1
-    
+        toco_piso = False
+       
+       # Cada vez que rebota pierde altura
+        if altura <= alto:
+            altura += 20 
+
+        # Si la pelota esta en el piso sin velocidad se queda quieta
+        elif altura >= alto:
+            velocidad = 0
+
+
+
     # Manejo de la pantalla
     pygame.display.update()
 
